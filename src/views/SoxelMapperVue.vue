@@ -82,7 +82,6 @@
         >
         <div v-else>
           <b-message type="is-success">Calcul terminé !</b-message>
-          <b-button @click="download">Télécharger le résultat </b-button>
         </div>
       </div>
     </b-step-item>
@@ -91,6 +90,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import parseAndMap from "../services/SolexMapper";
 
 @Component({})
 export default class SoxelMapperVue extends Vue {
@@ -117,16 +117,10 @@ export default class SoxelMapperVue extends Vue {
 
   launchCalculation(): void {
     this.isCalculating = true;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const that = this;
-    setTimeout(() => {
-      that.resultFile = that.baseFile;
-      that.isCalculating = false;
-    }, 5000);
-  }
-
-  download(): void {
-    console.error("DONE LOAD");
+    parseAndMap(this.baseFile, this.answerFile, (resultFile) => {
+      this.isCalculating = false;
+      this.resultFile = resultFile;
+    });
   }
 }
 </script>

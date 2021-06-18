@@ -33,7 +33,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx"
-  ],
+, "src/services/SolexMapper.ts"  ],
   "exclude": [
     "node_modules"
   ]

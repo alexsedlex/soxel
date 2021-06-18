@@ -30,6 +30,12 @@
       <div class="content">
         <h1 class="title has-text-centered">Fichier Base</h1>
 
+        <b-message type="is-info">
+          Le fichier "base" correspond au listing complet avec nom, numéro de
+          téléphone etc. <br />
+          La colonne "L" doit être un identifiant bloctel.
+        </b-message>
+
         <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
@@ -39,11 +45,6 @@
             {{ baseFile[0].name }}
           </span>
         </b-upload>
-
-        <b-message type="is-info">
-          Le fichier "base" correspond au listing complet avec nom, numéro de
-          téléphone etc. La colonne "L" doit être un identifant bloctel.
-        </b-message>
       </div>
     </b-step-item>
 
@@ -54,6 +55,11 @@
     >
       <div class="content">
         <h1 class="title has-text-centered">Réponse Bloctel</h1>
+
+        <b-message type="is-info">
+          La réponse bloctel doit avoir 3 colonnes : le numéro, l'identifiant,
+          et la réponse bloctel.
+        </b-message>
 
         <b-upload
           v-model="answerFile"
@@ -69,11 +75,6 @@
             {{ answerFile[0].name }}
           </span>
         </b-upload>
-
-        <b-message type="is-info">
-          La réponse bloctel doit avoir 3 colonnes : le numéro, l'identifiant,
-          et la réponse bloctel.
-        </b-message>
       </div>
     </b-step-item>
 
@@ -87,9 +88,16 @@
 
         <b-loading v-model="isCalculating" />
         <span v-if="isCalculating">
-          Calcul en cours, ce service vous êtes offert par votre dévoué boudin
-          créole...</span
-        >
+          Calcul en cours...
+          <br />
+          <span v-if="infoCounter >= 0">
+            Ce service vous est offert par votre dévoué boudin créole ❤️
+          </span>
+          <br />
+          <b-message type="is-info">
+            {{ randomInfo }}
+          </b-message>
+        </span>
         <div v-else-if="error">
           <b-message type="is-danger">{{ error }}</b-message>
         </div>
@@ -99,7 +107,7 @@
             <span v-html="success" />
           </b-message>
 
-          <b-message type="is-warning">Merci bisous merci</b-message>
+          <b-message type="is-warning">Merci bisous merci ❤️</b-message>
         </div>
       </div>
     </b-step-item>
@@ -118,6 +126,8 @@ export default class SoxelMapperVue extends Vue {
   isCalculating = false;
   error = "";
   success = "";
+  infoCounter = 1;
+  randomInfo = "";
 
   @Watch("baseFile")
   baseFileChanged(): void {
@@ -136,11 +146,45 @@ export default class SoxelMapperVue extends Vue {
 
   launchCalculation(): void {
     this.isCalculating = true;
+    this.randomInfoUpdate();
     parseAndMap(this.baseFile, this.answerFile, (error, success) => {
       this.error = error;
       this.success = success;
       this.isCalculating = false;
     });
+  }
+
+  randomInfoUpdate(): void {
+    this.refreshRandomInfo();
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this;
+    if (this.isCalculating) {
+      setTimeout(() => {
+        if (that.isCalculating) {
+          that.randomInfoUpdate();
+        }
+      }, 500);
+    }
+  }
+
+  refreshRandomInfo(): void {
+    const info = [
+      "l'Everest gagne 4 mm de hauteur chaque année",
+      "le Canada a plus de lacs que le reste du monde combiné",
+      "bien qu'elle s'étende sur 5 fuseaux horaires, la Chine utilise l'heure de Pékin",
+      "une ville du Texas s'appelle Ding Dong",
+      "taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu est la colline au nom le plus long",
+      "pluton est plus petite que la Russie",
+      "50% de l'ADN humain est similaire à celui d'une banane",
+      "Le cœur d'une baleine bleue est si grand qu'un homme peut nager dans ses artères",
+      "Certaines tortues peuvent respirer par l'anus",
+      "Il y a 1,6 million de fourmis pour chaque être humain",
+      "la Reine est propriétaire de tous les esturgeons, les baleines et les dauphins dans les eaux situées à 3 miles de la Grande-Bretagne",
+    ];
+    this.randomInfo =
+      "Savais-tu que " +
+      info[Math.round(Math.random() * (info.length - 1))] +
+      "?";
   }
 }
 </script>

@@ -86,8 +86,15 @@ function map(
 
   // Write result
   const fileName =
-    baseFile[0].name.replace(".ods", "").trim() + "-FUSION-BLOCTEL.ods";
-  XLSX.writeFile(base, fileName);
+    baseFile[0].name
+      .replace(".ods", "")
+      .trim()
+      .substring(0, 15) + "-FUSION-BLOCTEL.ods";
+  try {
+    XLSX.writeFile(base, fileName);
+  } catch (e) {
+    callback(e, "");
+  }
   callback(
     "",
     "- " +

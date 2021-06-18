@@ -39,6 +39,11 @@
             {{ baseFile[0].name }}
           </span>
         </b-upload>
+
+        <b-message type="is-info">
+          Le fichier "base" correspond au listing complet avec nom, numéro de
+          téléphone etc. La colonne "L" doit être un identifant bloctel.
+        </b-message>
       </div>
     </b-step-item>
 
@@ -64,6 +69,11 @@
             {{ answerFile[0].name }}
           </span>
         </b-upload>
+
+        <b-message type="is-info">
+          La réponse bloctel doit avoir 3 colonnes : le numéro, l'identifiant,
+          et la réponse bloctel.
+        </b-message>
       </div>
     </b-step-item>
 
@@ -80,8 +90,16 @@
           Calcul en cours, ce service vous êtes offert par votre dévoué boudin
           créole...</span
         >
+        <div v-else-if="error">
+          <b-message type="is-danger">{{ error }}</b-message>
+        </div>
         <div v-else>
-          <b-message type="is-success">Calcul terminé !</b-message>
+          <b-message type="is-success"
+            >Calcul terminé ! <br />
+            <span v-html="success" />
+          </b-message>
+
+          <b-message type="is-warning">Merci bisous merci</b-message>
         </div>
       </div>
     </b-step-item>
@@ -97,8 +115,9 @@ export default class SoxelMapperVue extends Vue {
   activeStep = 0;
   baseFile: File[] = [];
   answerFile: File[] = [];
-  resultFile: File[] = [];
   isCalculating = false;
+  error = "";
+  success = "";
 
   @Watch("baseFile")
   baseFileChanged(): void {
@@ -117,9 +136,10 @@ export default class SoxelMapperVue extends Vue {
 
   launchCalculation(): void {
     this.isCalculating = true;
-    parseAndMap(this.baseFile, this.answerFile, (resultFile) => {
+    parseAndMap(this.baseFile, this.answerFile, (error, success) => {
+      this.error = error;
+      this.success = success;
       this.isCalculating = false;
-      this.resultFile = resultFile;
     });
   }
 }
@@ -130,6 +150,6 @@ export default class SoxelMapperVue extends Vue {
 
 .content {
   margin: auto;
-  width: 500px;
+  width: 700px;
 }
 </style>

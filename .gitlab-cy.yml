@@ -1,3 +1,7 @@
+include:
+  - project: 'codelutin/ci'
+    file: '/ci.yml'
+
 pages:
  image: node:latest
  stage: deploy

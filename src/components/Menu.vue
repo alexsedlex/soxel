@@ -21,13 +21,24 @@
 <template>
   <b-navbar shadow>
     <template slot="brand">
-      <b-navbar-item tag="router-link" :to="{ path: '/' }">
-        SOXEL
+      <b-navbar-item>
+        <router-link to="/home">
+          SOXEL - Accueil
+        </router-link>
       </b-navbar-item>
     </template>
     <template slot="start">
-      
-    </template>
+      <b-navbar-item>
+        <router-link to="/generate-bloctel">
+          Générer un fichier bloctel à partir d'un fichier base
+        </router-link>
+      </b-navbar-item>
+      <b-navbar-item>
+        <router-link to="/apply-bloctel">
+          Intégrer réponse bloctel
+        </router-link>
+      </b-navbar-item></template
+    >
 
     <template slot="end">
       Copyright Boudin Créole
@@ -57,7 +68,15 @@ a.navbar-item.is-active,
 .navbar-link:focus-within,
 .navbar-link:hover,
 .navbar-link.is-active {
-  color: @pelorous !important;
+  color: black;
+}
+
+.navbar {
+  .navbar-item {
+    a {
+      color: black;
+    }
+  }
 }
 .navbar-link:not(.is-arrowless)::after {
   border-color: @pelorous !important;
@@ -65,5 +84,9 @@ a.navbar-item.is-active,
 
 .buttons {
   margin-right: 10px;
+}
+.router-link-active {
+  color: #7957d5 ! important;
+  font-weight: bolder;
 }
 </style>

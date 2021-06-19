@@ -19,23 +19,40 @@
  * #L%
  */
 
-import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import Vue from "vue";
+import VueRouter, { RouteConfig } from "vue-router";
 
-import SoxelMapperVue from "@/views/SoxelMapperVue.vue";
+import SoxelBloctelApplierVue from "@/views/SoxelBloctelApplierVue.vue";
+import SoxelBloctelGeneratorVue from "@/views/SoxelBloctelGeneratorVue.vue";
+import HomeView from "@/views/HomeView.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
     path: "/",
-    name: "SoxelMapper",
-    component: SoxelMapperVue
+    name: "Home2",
+    component: HomeView,
+  },
+  {
+    path: "/home",
+    name: "Home",
+    component: HomeView,
+  },
+  {
+    path: "/apply-bloctel",
+    name: "SoxelMapperApply",
+    component: SoxelBloctelApplierVue,
+  },
+  {
+    path: "/generate-bloctel",
+    name: "SoxelMapperGenerator",
+    component: SoxelBloctelGeneratorVue,
   },
 ];
 
 const router = new VueRouter({
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

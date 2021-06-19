@@ -50,36 +50,6 @@
 
     <b-step-item
       step="2"
-      label="Réponse Bloctel"
-      :clickable="baseFile.length > 0"
-    >
-      <div class="content">
-        <h1 class="title has-text-centered">Réponse Bloctel</h1>
-
-        <b-message type="is-info">
-          La réponse bloctel doit avoir 3 colonnes : le numéro, l'identifiant,
-          et la réponse bloctel.
-        </b-message>
-
-        <b-upload
-          v-model="answerFile"
-          class="file-label"
-          accept=".ods"
-          multiple
-        >
-          <span class="file-cta">
-            <b-icon class="file-icon" icon="upload"></b-icon>
-            <span class="file-label"> Renseignez le fichier Bloctel</span>
-          </span>
-          <span class="file-name" v-if="answerFile.length > 0">
-            {{ answerFile[0].name }}
-          </span>
-        </b-upload>
-      </div>
-    </b-step-item>
-
-    <b-step-item
-      step="3"
       label="Résultat"
       :clickable="baseFile.length > 0 && answerFile.length > 0"
     >
@@ -88,7 +58,7 @@
 
         <b-loading v-model="isCalculating" />
         <span v-if="isCalculating">
-          Calcul en cours...
+          Génération du fichier à envoyer à bloctel en cours...
           <br />
           <span v-if="infoCounter >= 0">
             Ce service vous est offert par votre dévoué boudin créole ❤️
@@ -103,11 +73,9 @@
         </div>
         <div v-else>
           <b-message type="is-success"
-            >Calcul terminé ! <br />
+            >Fichier à envoyer à bloctel généré ! <br />
             <span v-html="success" />
           </b-message>
-
-          <b-message type="is-warning">Merci bisous merci ❤️</b-message>
         </div>
       </div>
     </b-step-item>
@@ -119,7 +87,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import parseAndMap from "../services/SolexMapper";
 
 @Component({})
-export default class SoxelMapperVue extends Vue {
+export default class SoxelBloctelGeneratorVue extends Vue {
   activeStep = 0;
   baseFile: File[] = [];
   answerFile: File[] = [];

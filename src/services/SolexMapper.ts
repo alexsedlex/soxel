@@ -83,53 +83,49 @@ function map(
   answer: WorkBook,
   callback: (error: string, success: string) => void
 ) {
-  const allowedIds = getAllowedIds(answer, callback);
+  const allowedPhoneNumbers = getAllowedPhoneNumbers(answer, callback);
   const first_sheet_name = base.SheetNames[0];
   const worksheet = base.Sheets[first_sheet_name];
-  let reachedEnd = false;
-  let i = 2;
+  let consecutiveEmptyLines = 0;
   let ignoredCount = 0;
-  while (!reachedEnd) {
-    const identifierCell = worksheet["L" + i];
+  let acceptedCount = 0;
+  let i = 2;
+  while (consecutiveEmptyLines <= 5) {
+    const identifierCell = worksheet["B" + i];
     if (identifierCell) {
-      const identifierValue = parseInt(identifierCell.v);
-      if (!identifierValue) {
-        callback(
-          "La cellule 'L" +
-            i +
-            "' du fichier " +
-            baseFile[0].name +
-            " devrait correspondre à l'identifiant bloctel mais j'ai trouvé '" +
-            identifierCell.v +
-            "', je me suis planté ou c'est toi ?",
-          ""
-        );
-        return;
-      } else {
-        let value = "(OK)";
-        let isOk = true;
-        if (!allowedIds.includes(identifierValue)) {
-          value = "REJETE PAR BLOCTEL";
-          ignoredCount++;
-          isOk = false;
-        }
-        const resultCell = worksheet["H" + i];
-        if (resultCell && resultCell.v) {
-          if (isOk) {
-            worksheet["H" + i].v = worksheet["H" + i].v + value;
+      consecutiveEmptyLines = 0;
+      ["H", "I", "J", "K"].forEach((column: string) => {
+        const phoneNumberCell = worksheet[column + i];
+        if (phoneNumberCell && phoneNumberCell.v) {
+          const phoneNumber = phoneNumberCell.v.trim();
+          if (!phoneNumber) {
+            callback(
+              "La cellule '" +
+                column +
+                i +
+                "' du fichier " +
+                baseFile[0].name +
+                " devrait correspondre à l'identifiant bloctel mais j'ai trouvé '" +
+                phoneNumberCell.v +
+                "', je me suis planté ou c'est toi ?",
+              ""
+            );
+            return;
           } else {
-            worksheet["H" + i].v = value;
+            if (!allowedPhoneNumbers.includes(phoneNumber)) {
+              phoneNumberCell.v = "REJETE PAR BLOCTEL";
+              ignoredCount++;
+            } else {
+              phoneNumberCell.v = phoneNumberCell.v + "(OK)";
+              acceptedCount++;
+            }
           }
-        } else {
-          XLSX.utils.sheet_add_aoa(worksheet, [[value]], {
-            origin: "H" + i,
-          });
         }
-      }
-      i++;
+      });
     } else {
-      reachedEnd = true;
+      consecutiveEmptyLines++;
     }
+    i++;
   }
 
   // Write result
@@ -150,18 +146,22 @@ function map(
       " lignes dans le fichier " +
       baseFile[0].name +
       "<br/>- " +
+      (ignoredCount + acceptedCount) +
+      " numéros en tout dont" +
+      "<br/>- " +
+      acceptedCount +
+      " numéros acceptés par bloctel et " +
+      "<br/>- " +
       ignoredCount +
-      " écartées par bloctel<br/>- " +
-      (i - ignoredCount) +
-      " lignes dans le fichier fusionné"
+      " numéros écartés par bloctel"
   );
 }
 
-function getAllowedIds(
+function getAllowedPhoneNumbers(
   answer: WorkBook,
   callback: (error: string, success: string) => void
 ): number[] {
-  const allowedIds = [];
+  const allowedPhoneNumbers = [];
   const first_sheet_name = answer.SheetNames[0];
   const worksheet = answer.Sheets[first_sheet_name];
   let reachedEnd = false;
@@ -169,32 +169,24 @@ function getAllowedIds(
   while (!reachedEnd) {
     const identifierCell = worksheet["B" + i];
     if (identifierCell) {
-      const identifierValue = parseInt(identifierCell.v);
-      if (!identifierValue) {
-        callback(
-          "La cellule 'Bs" +
-            i +
-            "' du fichier bloctel devrait correspondre à l'identifiant bloctel mais j'ai trouvé '" +
-            identifierCell.v +
-            "', je me suis planté ou c'est toi ?",
-          ""
-        );
-        return [];
+      const phoneNumberCell = worksheet["A" + i];
+      if (phoneNumberCell && phoneNumberCell.v) {
+        const phoneNumber = phoneNumberCell.v.trim();
+        const bloctelStatusCell = worksheet["C" + i];
+        if (
+          bloctelStatusCell &&
+          bloctelStatusCell.v &&
+          bloctelStatusCell.v.trim() == "OK"
+        ) {
+          allowedPhoneNumbers.push(phoneNumber);
+        }
       }
-      const bloctelStatusCell = worksheet["C" + i];
-      if (
-        bloctelStatusCell &&
-        bloctelStatusCell.v &&
-        bloctelStatusCell.v.trim() == "OK"
-      ) {
-        allowedIds.push(identifierValue);
-      }
-      i++;
     } else {
       reachedEnd = true;
     }
+    i++;
   }
-  return allowedIds;
+  return allowedPhoneNumbers;
 }
 
 function getPhoneNumbers(base: WorkBook): PhoneNumberResult {

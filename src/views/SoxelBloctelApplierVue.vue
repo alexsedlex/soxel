@@ -33,7 +33,8 @@
         <b-message type="is-info">
           Le fichier "base" correspond au listing complet avec nom, numéro de
           téléphone etc. <br />
-          La colonne "L" doit être un identifiant bloctel.
+          Les colonnes "H", "I", "J" et "K" doivent correspondre à des numéros
+          de téléphones.
         </b-message>
 
         <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
@@ -140,6 +141,7 @@ export default class SoxelBloctelApplierVue extends Vue {
   anwserFileChanged(): void {
     if (this.answerFile.length > 0) {
       this.activeStep = 2;
+      this.isCalculating = true;
       setTimeout(this.launchCalculation, 750);
     }
   }

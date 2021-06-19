@@ -116,7 +116,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import parseAndMap from "../services/SolexMapper";
+import { parseAndMap } from "../services/SolexMapper";
 
 @Component({})
 export default class SoxelBloctelApplierVue extends Vue {
@@ -147,7 +147,7 @@ export default class SoxelBloctelApplierVue extends Vue {
   launchCalculation(): void {
     this.isCalculating = true;
     this.randomInfoUpdate();
-    parseAndMap(this.baseFile, this.answerFile, (error, success) => {
+    parseAndMap(this.baseFile, this.answerFile, (error: string, success: string) => {
       this.error = error;
       this.success = success;
       this.isCalculating = false;

@@ -83,7 +83,7 @@ function map(
   answer: WorkBook,
   callback: (error: string, success: string) => void
 ) {
-  const allowedPhoneNumbers = getAllowedPhoneNumbers(answer, callback);
+  const allowedPhoneNumbers = getAllowedPhoneNumbers(answer);
   const first_sheet_name = base.SheetNames[0];
   const worksheet = base.Sheets[first_sheet_name];
   let consecutiveEmptyLines = 0;
@@ -157,10 +157,7 @@ function map(
   );
 }
 
-function getAllowedPhoneNumbers(
-  answer: WorkBook,
-  callback: (error: string, success: string) => void
-): number[] {
+function getAllowedPhoneNumbers(answer: WorkBook): number[] {
   const allowedPhoneNumbers = [];
   const first_sheet_name = answer.SheetNames[0];
   const worksheet = answer.Sheets[first_sheet_name];

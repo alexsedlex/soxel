@@ -33,7 +33,8 @@
         <b-message type="is-info">
           Le fichier "base" correspond au listing complet avec nom, numéro de
           téléphone etc. <br />
-          La colonne "L" doit être un identifiant bloctel.
+          Les colonnes "H", "I", "J" et "K" doivent être des numéros de
+          téléphones.
         </b-message>
 
         <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
@@ -48,11 +49,7 @@
       </div>
     </b-step-item>
 
-    <b-step-item
-      step="2"
-      label="Résultat"
-      :clickable="baseFile.length > 0 && answerFile.length > 0"
-    >
+    <b-step-item step="2" label="Résultat" :clickable="baseFile.length > 0">
       <div class="content">
         <h1 class="title has-text-centered">Résultat</h1>
 
@@ -84,13 +81,12 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import parseAndMap from "../services/SolexMapper";
+import { generateBloctelFile } from "../services/SolexMapper";
 
 @Component({})
 export default class SoxelBloctelGeneratorVue extends Vue {
   activeStep = 0;
   baseFile: File[] = [];
-  answerFile: File[] = [];
   isCalculating = false;
   error = "";
   success = "";
@@ -101,21 +97,14 @@ export default class SoxelBloctelGeneratorVue extends Vue {
   baseFileChanged(): void {
     if (this.baseFile.length > 0) {
       this.activeStep = 1;
-    }
-  }
-
-  @Watch("answerFile")
-  anwserFileChanged(): void {
-    if (this.answerFile.length > 0) {
-      this.launchCalculation();
-      this.activeStep = 2;
+      setTimeout(this.launchCalculation, 500);
     }
   }
 
   launchCalculation(): void {
     this.isCalculating = true;
     this.randomInfoUpdate();
-    parseAndMap(this.baseFile, this.answerFile, (error, success) => {
+    generateBloctelFile(this.baseFile, (error: string, success: string) => {
       this.error = error;
       this.success = success;
       this.isCalculating = false;

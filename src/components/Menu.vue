@@ -86,7 +86,7 @@ a.navbar-item.is-active,
   margin-right: 10px;
 }
 .router-link-active {
-  color: #7957d5 ! important;
+  color: #7957d5 !important;
   font-weight: bolder;
 }
 </style>

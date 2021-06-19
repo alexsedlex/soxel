@@ -1,7 +1,55 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import XLSX, { WorkBook } from "xlsx";
 
-export default function parseAndMap(
+export function generateBloctelFile(
+  baseFile: File[],
+  callback: (error: string, success: string) => void
+): void {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (e.target && e.target.result) {
+      // @ts-ignore
+      const data = new Uint8Array(e.target.result);
+      const baseFileXLSX = XLSX.read(data, {
+        type: "array",
+      });
+      const phoneNumbers = getPhoneNumbers(baseFileXLSX);
+      const blocTelFile = XLSX.utils.book_new();
+      blocTelFile.SheetNames.push("Numéros à tester");
+      const ws_data = [["Téléphone", "Identifant", "Réponse bloctel"]];
+      let i = 1;
+      phoneNumbers.phonesNumber.forEach((phoneNumber) => {
+        ws_data.push([phoneNumber, i.toString(), ""]);
+        i++;
+      });
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+      blocTelFile.Sheets["Numéros à tester"] = ws;
+
+      // Write result
+      const fileName =
+        baseFile[0].name
+          .replace(".ods", "")
+          .trim()
+          .substring(0, 15) + "- DEMANDE BLOCTEL.ods";
+      try {
+        XLSX.writeFile(blocTelFile, fileName);
+      } catch (e) {
+        callback(e, "");
+      }
+      callback(
+        "",
+        "Le fichier contient " +
+          phoneNumbers.lines +
+          " dont " +
+          phoneNumbers.phonesNumber.length +
+          " numéros de téléphones à à vérifier"
+      );
+    }
+  };
+  reader.readAsArrayBuffer(baseFile[0]);
+}
+
+export function parseAndMap(
   baseFile: File[],
   bloctelAnswer: File[],
   callback: (error: string, success: string) => void
@@ -147,4 +195,36 @@ function getAllowedIds(
     }
   }
   return allowedIds;
+}
+
+function getPhoneNumbers(base: WorkBook): PhoneNumberResult {
+  const phoneNumbers: string[] = [];
+  const first_sheet_name = base.SheetNames[0];
+  const worksheet = base.Sheets[first_sheet_name];
+  let consecutiveEmptyLines = 0;
+  let i = 2;
+  while (consecutiveEmptyLines <= 5) {
+    const identifierCell = worksheet["B" + i];
+    if (identifierCell) {
+      consecutiveEmptyLines = 0;
+      ["H", "I", "J", "K"].forEach((column: string) => {
+        const phoneNumber = worksheet[column + i];
+        if (phoneNumber && phoneNumber.v && phoneNumber.v.trim().length >= 4) {
+          phoneNumbers.push(phoneNumber.v.trim());
+        }
+      });
+    } else {
+      consecutiveEmptyLines++;
+    }
+    i++;
+  }
+  const phoneNumberResult = new PhoneNumberResult();
+  phoneNumberResult.lines = i;
+  phoneNumberResult.phonesNumber = phoneNumbers;
+  return phoneNumberResult;
+}
+
+class PhoneNumberResult {
+  lines: number;
+  phonesNumber: string[];
 }

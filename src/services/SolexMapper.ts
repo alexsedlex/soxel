@@ -116,7 +116,7 @@ function map(
               phoneNumberCell.v = "REJETE PAR BLOCTEL";
               ignoredCount++;
             } else {
-              phoneNumberCell.v = phoneNumberCell.v+"";
+              phoneNumberCell.v = phoneNumberCell.v + "";
               acceptedCount++;
             }
           }
@@ -196,10 +196,17 @@ function getPhoneNumbers(base: WorkBook): PhoneNumberResult {
     const identifierCell = worksheet["B" + i];
     if (identifierCell) {
       consecutiveEmptyLines = 0;
+      let foundPhone = false;
       ["H", "I", "J", "K"].forEach((column: string) => {
         const phoneNumber = worksheet[column + i];
-        if (phoneNumber && phoneNumber.v && phoneNumber.v.trim().length >= 4) {
+        if (
+          !foundPhone &&
+          phoneNumber &&
+          phoneNumber.v &&
+          phoneNumber.v.trim().length >= 4
+        ) {
           phoneNumbers.push(phoneNumber.v.trim());
+          foundPhone = true;
         }
       });
     } else {

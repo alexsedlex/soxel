@@ -197,7 +197,7 @@ function getPhoneNumbers(base: WorkBook): PhoneNumberResult {
     if (identifierCell) {
       consecutiveEmptyLines = 0;
       let foundPhone = false;
-      ["H", "I", "J", "K"].forEach((column: string) => {
+      ["H", "K", "I", "J"].forEach((column: string) => {
         const phoneNumber = worksheet[column + i];
         if (
           !foundPhone &&

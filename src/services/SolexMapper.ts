@@ -116,7 +116,7 @@ function map(
               phoneNumberCell.v = "REJETE PAR BLOCTEL";
               ignoredCount++;
             } else {
-              phoneNumberCell.v = phoneNumberCell.v + "(OK)";
+              phoneNumberCell.v = phoneNumberCell.v;
               acceptedCount++;
             }
           }

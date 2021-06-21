@@ -40,7 +40,7 @@ export function generateBloctelFile(
         "",
         "Le fichier contient " +
           phoneNumbers.lines +
-          " dont " +
+          " lignes dont " +
           phoneNumbers.phonesNumber.length +
           " numéros de téléphones à à vérifier"
       );

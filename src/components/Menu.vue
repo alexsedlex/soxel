@@ -23,25 +23,25 @@
     <template slot="brand">
       <b-navbar-item>
         <router-link to="/home">
-          SOXEL - Accueil
+          SOXEL v2.0
         </router-link>
       </b-navbar-item>
     </template>
     <template slot="start">
       <b-navbar-item>
         <router-link to="/generate-bloctel">
-          Générer un fichier bloctel à partir d'un fichier base
+          Générer une demande bloctel
         </router-link>
       </b-navbar-item>
       <b-navbar-item>
         <router-link to="/apply-bloctel">
-          Intégrer réponse bloctel
+          Intégrer une réponse bloctel
         </router-link>
       </b-navbar-item></template
     >
 
     <template slot="end">
-      Copyright Boudin Créole
+      Copyright Alex Morel
     </template>
   </b-navbar>
 </template>

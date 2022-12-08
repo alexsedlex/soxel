@@ -97,7 +97,7 @@ export function generateBloctelOdsFile(
   reader.readAsArrayBuffer(baseFile[0]);
 }
 
-export function parseAndMap(
+export function parseAndMapOds(
   baseFile: File[],
   bloctelAnswer: File[],
   callback: (error: string, success: string) => void
@@ -116,7 +116,7 @@ export function parseAndMap(
           const bloctelAnswerXLSX = XLSX.read(data2, {
             type: "array",
           });
-          map(baseFile, baseFileXLSX, bloctelAnswerXLSX, callback);
+          mapOds(baseFile, baseFileXLSX, bloctelAnswerXLSX, callback);
         }
       };
       reader2.readAsArrayBuffer(bloctelAnswer[0]);
@@ -125,20 +125,66 @@ export function parseAndMap(
   reader.readAsArrayBuffer(baseFile[0]);
 }
 
-function map(
+export function parseAndMapCSV(
+  baseFile: File[],
+  bloctelAnswer: File[],
+  callback: (error: string, success: string) => void
+): void {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (e.target && e.target.result) {
+      // @ts-ignore
+      const data = new Uint8Array(e.target.result);
+      const baseFileXLSX = XLSX.read(data, { type: "array" });
+      const reader2 = new FileReader();
+      reader2.onload = function(e2) {
+        if (e2.target && e2.target.result) {
+          const bloctelAnswerCsv = e2.target.result.toString();
+          mapCsv(baseFile, baseFileXLSX, bloctelAnswerCsv, callback);
+        }
+      };
+      reader2.readAsText(bloctelAnswer[0]);
+    }
+  };
+  reader.readAsArrayBuffer(baseFile[0]);
+}
+
+function mapOds(
   baseFile: File[],
   base: WorkBook,
   answer: WorkBook,
   callback: (error: string, success: string) => void
 ) {
-  const allowedPhoneNumbers = getAllowedPhoneNumbers(answer);
+  const allowedPhoneNumbers = getAllowedPhoneNumbersOds(answer);
+  doMap(baseFile, base, allowedPhoneNumbers, callback);
+}
+
+function mapCsv(
+  baseFile: File[],
+  base: WorkBook,
+  answerCsv: string,
+  callback: (error: string, success: string) => void
+) {
+  const allowedPhoneNumbers = getAllowedPhoneNumbersCsv(answerCsv);
+  console.error(allowedPhoneNumbers);
+  doMap(baseFile, base, allowedPhoneNumbers, callback);
+}
+
+function doMap(
+  baseFile: File[],
+  base: WorkBook,
+  allowedPhoneNumbers: string[],
+  callback: (error: string, success: string) => void
+) {
   const first_sheet_name = base.SheetNames[0];
   const worksheet = base.Sheets[first_sheet_name];
   let consecutiveEmptyLines = 0;
   let ignoredCount = 0;
   let acceptedCount = 0;
   let i = 2;
-  while (consecutiveEmptyLines <= 5) {
+
+  while (consecutiveEmptyLines <= 5 && i < 5000) {
+    console.error(consecutiveEmptyLines, i);
     const identifierCell = worksheet["B" + i];
     if (identifierCell) {
       consecutiveEmptyLines = 0;
@@ -205,7 +251,7 @@ function map(
   );
 }
 
-function getAllowedPhoneNumbers(answer: WorkBook): string[] {
+function getAllowedPhoneNumbersOds(answer: WorkBook): string[] {
   const allowedPhoneNumbers = [];
   const first_sheet_name = answer.SheetNames[0];
   const worksheet = answer.Sheets[first_sheet_name];
@@ -224,8 +270,6 @@ function getAllowedPhoneNumbers(answer: WorkBook): string[] {
           bloctelStatusCell.v.trim() == "OK"
         ) {
           allowedPhoneNumbers.push(phoneNumber);
-          allowedPhoneNumbers.push("0" + phoneNumber);
-          console.error("ALLOWED : " + phoneNumber);
         }
       }
     } else {
@@ -233,7 +277,18 @@ function getAllowedPhoneNumbers(answer: WorkBook): string[] {
     }
     i++;
   }
-  console.error(allowedPhoneNumbers);
+  return allowedPhoneNumbers;
+}
+
+function getAllowedPhoneNumbersCsv(csv: string): string[] {
+  const allowedPhoneNumbers: string[] = [];
+  const lines = csv.split("\n");
+  lines.forEach((line) => {
+    const cells = line.split(";");
+    if (cells[2] && cells[2].trim() == "OK") {
+      allowedPhoneNumbers.push(cells[0].trim());
+    }
+  });
   return allowedPhoneNumbers;
 }
 

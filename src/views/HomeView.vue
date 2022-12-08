@@ -19,25 +19,15 @@
   #L%
   -->
 <template>
-  <div class="container">
-    <section class="hero">
-      <div class="hero-body">
-        <p class="title">
-          SOXEL
-        </p>
-        <p class="subtitle">
-          v2.0
-        </p>
-      </div>
-    </section>
-
+  <div class="home">
+    <b>Bienvenue sur Soxel !</b><br />
     Quelle action souhaitez-vous réaliser ?
 
-    <br />
+    <br /><br />
     <section class="hero">
       <router-link to="/generate-bloctel">
         <b-button type="is-info">
-          Générer un fichier bloctel à partir d'un fichier base
+          Générer une demande bloctel
         </b-button>
       </router-link>
 
@@ -46,7 +36,7 @@
 
       <router-link to="/apply-bloctel">
         <b-button type="is-info">
-          Intégrer une réponse bloctel à un fichier base
+          Intégrer une réponse bloctel
         </b-button>
       </router-link>
     </section>
@@ -62,4 +52,9 @@ export default class HomeVue extends Vue {}
 
 <style scoped lang="less">
 @import "../less/main";
+.home {
+  padding-top: 20px;
+  text-align: center;
+  width: 100%;
+}
 </style>

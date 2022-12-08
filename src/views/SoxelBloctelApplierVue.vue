@@ -40,7 +40,9 @@
         <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
-            <span class="file-label"> Renseignez le fichier Excel Base</span>
+            <span class="file-label">
+              Renseignez le fichier Excel Base (format ods)</span
+            >
           </span>
           <span class="file-name" v-if="baseFile.length > 0">
             {{ baseFile[0].name }}
@@ -65,12 +67,15 @@
         <b-upload
           v-model="answerFile"
           class="file-label"
-          accept=".ods"
+          accept=".csv"
           multiple
         >
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
-            <span class="file-label"> Renseignez le fichier Bloctel</span>
+            <span class="file-label">
+              Renseignez le fichier Bloctel (format csv, commence par
+              "retour_")</span
+            >
           </span>
           <span class="file-name" v-if="answerFile.length > 0">
             {{ answerFile[0].name }}
@@ -91,9 +96,7 @@
         <span v-if="isCalculating">
           Calcul en cours...
           <br />
-          <span v-if="infoCounter >= 0">
-            Ce service vous est offert par votre dévoué boudin créole ❤️
-          </span>
+          <span v-if="infoCounter >= 0"> </span>
           <br />
           <b-message type="is-info">
             {{ randomInfo }}
@@ -117,7 +120,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { parseAndMap } from "../services/SolexMapper";
+import { parseAndMapCSV } from "../services/SolexMapper";
 
 @Component({})
 export default class SoxelBloctelApplierVue extends Vue {
@@ -149,7 +152,7 @@ export default class SoxelBloctelApplierVue extends Vue {
   launchCalculation(): void {
     this.isCalculating = true;
     this.randomInfoUpdate();
-    parseAndMap(
+    parseAndMapCSV(
       this.baseFile,
       this.answerFile,
       (error: string, success: string) => {
@@ -169,7 +172,7 @@ export default class SoxelBloctelApplierVue extends Vue {
         if (that.isCalculating) {
           that.randomInfoUpdate();
         }
-      }, 500);
+      }, 5000);
     }
   }
 

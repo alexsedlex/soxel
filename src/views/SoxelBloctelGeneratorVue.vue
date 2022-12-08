@@ -40,7 +40,9 @@
         <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
-            <span class="file-label"> Renseignez le fichier Excel Base</span>
+            <span class="file-label">
+              Renseignez le fichier Excel Base (format ods)</span
+            >
           </span>
           <span class="file-name" v-if="baseFile.length > 0">
             {{ baseFile[0].name }}
@@ -57,9 +59,7 @@
         <span v-if="isCalculating">
           Génération du fichier à envoyer à bloctel en cours...
           <br />
-          <span v-if="infoCounter >= 0">
-            Ce service vous est offert par votre dévoué boudin créole ❤️
-          </span>
+          <span v-if="infoCounter >= 0"> </span>
           <br />
           <b-message type="is-info">
             {{ randomInfo }}
@@ -70,7 +70,11 @@
         </div>
         <div v-else>
           <b-message type="is-success"
-            >Fichier à envoyer à bloctel généré ! <br />
+            >Fichier à envoyer à bloctel généré ! Vous pouvez soumettre ce
+            fichier csv
+            <a href="https://pro.bloctel.gouv.fr/mes-fichiers">
+              directement sur bloctel </a
+            ><br />
             <span v-html="success" />
           </b-message>
         </div>
@@ -121,7 +125,7 @@ export default class SoxelBloctelGeneratorVue extends Vue {
         if (that.isCalculating) {
           that.randomInfoUpdate();
         }
-      }, 500);
+      }, 5000);
     }
   }
 

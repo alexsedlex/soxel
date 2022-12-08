@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { generateBloctelFile } from "../services/SolexMapper";
+import { generateBloctelCSVFile } from "../services/SolexMapper";
 
 @Component({})
 export default class SoxelBloctelGeneratorVue extends Vue {
@@ -105,7 +105,7 @@ export default class SoxelBloctelGeneratorVue extends Vue {
   launchCalculation(): void {
     this.isCalculating = true;
     this.randomInfoUpdate();
-    generateBloctelFile(this.baseFile, (error: string, success: string) => {
+    generateBloctelCSVFile(this.baseFile, (error: string, success: string) => {
       this.error = error;
       this.success = success;
       this.isCalculating = false;

@@ -1,7 +1,55 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import XLSX, { WorkBook } from "xlsx";
 
-export function generateBloctelFile(
+export function generateBloctelCSVFile(
+  baseFile: File[],
+  callback: (error: string, success: string) => void
+): void {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (e.target && e.target.result) {
+      // @ts-ignore
+      const data = new Uint8Array(e.target.result);
+      const baseFileXLSX = XLSX.read(data, {
+        type: "array",
+      });
+      const phoneNumbers = getPhoneNumbers(baseFileXLSX);
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Telephone;Identifiant\n";
+      let i = 1;
+      phoneNumbers.phonesNumber.forEach((phoneNumber) => {
+        let zePhoneNumber = ("" + phoneNumber).trim();
+        if (zePhoneNumber.length < 10) {
+          zePhoneNumber = "0" + zePhoneNumber;
+        }
+        csvContent += zePhoneNumber.toString() + ";" + i.toString() + "\n";
+        i++;
+      });
+      const fileName =
+        baseFile[0].name
+          .replace(".ods", "")
+          .trim()
+          .substring(0, 15) + "- DEMANDE BLOCTEL.csv";
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link); // Required for FF
+      link.click();
+      const ws = callback(
+        "",
+        "Le fichier contient " +
+          phoneNumbers.lines +
+          " lignes dont " +
+          phoneNumbers.phonesNumber.length +
+          " numéros de téléphones à à vérifier"
+      );
+    }
+  };
+  reader.readAsArrayBuffer(baseFile[0]);
+}
+
+export function generateBloctelOdsFile(
   baseFile: File[],
   callback: (error: string, success: string) => void
 ): void {
@@ -157,7 +205,7 @@ function map(
   );
 }
 
-function getAllowedPhoneNumbers(answer: WorkBook): number[] {
+function getAllowedPhoneNumbers(answer: WorkBook): string[] {
   const allowedPhoneNumbers = [];
   const first_sheet_name = answer.SheetNames[0];
   const worksheet = answer.Sheets[first_sheet_name];
@@ -168,7 +216,7 @@ function getAllowedPhoneNumbers(answer: WorkBook): number[] {
     if (identifierCell) {
       const phoneNumberCell = worksheet["A" + i];
       if (phoneNumberCell && phoneNumberCell.v) {
-        const phoneNumber = phoneNumberCell.v.trim();
+        const phoneNumber = ("" + phoneNumberCell.v).trim();
         const bloctelStatusCell = worksheet["C" + i];
         if (
           bloctelStatusCell &&
@@ -176,6 +224,8 @@ function getAllowedPhoneNumbers(answer: WorkBook): number[] {
           bloctelStatusCell.v.trim() == "OK"
         ) {
           allowedPhoneNumbers.push(phoneNumber);
+          allowedPhoneNumbers.push("0" + phoneNumber);
+          console.error("ALLOWED : " + phoneNumber);
         }
       }
     } else {
@@ -183,6 +233,7 @@ function getAllowedPhoneNumbers(answer: WorkBook): number[] {
     }
     i++;
   }
+  console.error(allowedPhoneNumbers);
   return allowedPhoneNumbers;
 }
 

@@ -26,12 +26,12 @@
           SOXEL
         </p>
         <p class="subtitle">
-          SOline + eXcell + bloctEL
+          v2.0
         </p>
       </div>
     </section>
 
-    Que veux-tu faire ajourd'hui ma So ?
+    Quelle action souhaitez-vous réaliser ?
 
     <br />
     <section class="hero">

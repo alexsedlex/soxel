@@ -37,11 +37,16 @@
           de téléphones.
         </b-message>
 
-        <b-upload v-model="baseFile" class="file-label" accept=".ods" multiple>
+        <b-upload
+          v-model="baseFile"
+          class="file-label"
+          accept=".ods,.xlsx"
+          multiple
+        >
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
             <span class="file-label">
-              Renseignez le fichier Excel Base (format ods)</span
+              Renseignez le fichier Excel Base (format ods ou xlsx)</span
             >
           </span>
           <span class="file-name" v-if="baseFile.length > 0">

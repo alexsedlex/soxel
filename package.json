@@ -12,6 +12,7 @@
   "dependencies": {
     "buefy": "~0.8.20",
     "core-js": "^3.8.1",
+    "js-sha256": "^0.9.0",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.6",
     "vue-property-decorator": "^9.1.2",
@@ -19,7 +20,6 @@
     "xlsx": "^0.17.0"
   },
   "devDependencies": {
-    "execa": "latest",
     "@mdi/font": "^5.8.55",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
@@ -36,6 +36,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.1.0",
     "eslint-plugin-vue": "^6.2.2",
+    "execa": "latest",
     "less": "^3.13.1",
     "less-loader": "^7.2.1",
     "typescript": "^3.9.7",

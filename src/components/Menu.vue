@@ -40,17 +40,47 @@
       </b-navbar-item></template
     >
 
-    <template slot="end">
-      Copyright Alex Morel
+    <template slot="end" v-if="userName">
+      <div style="height: 100%; display: flex;align-items: center">
+        <b-navbar-item>
+          <router-link to="/home">
+            {{ userName }}
+          </router-link>
+        </b-navbar-item>
+        <b-button
+          @click="logout"
+          icon-right="logout"
+          type="is-primary is-small"
+          :label="logoutLabel"
+          @mouseover="logoutLabel = 'Se déconnecter'"
+          @mouseout="logoutLabel = ''"
+        >
+        </b-button>
+      </div>
     </template>
   </b-navbar>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class Menu extends Vue {}
+export default class Menu extends Vue {
+  @Prop() userName: string;
+  logoutLabel = "";
+
+  mounted() {
+    this.logoutLabel = "";
+  }
+  logout() {
+    this.$buefy.dialog.confirm({
+      message: "Êtes-vous certain de vouloir vous déconnecter ?",
+      cancelText: "Annuler",
+      confirmText: "Se déconnecter",
+      onConfirm: () => this.$emit("logout"),
+    });
+  }
+}
 </script>
 
 <style lang="less">

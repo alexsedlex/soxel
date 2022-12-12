@@ -20,7 +20,7 @@
   -->
 <template>
   <div id="app">
-    <Menu />
+    <Menu :userName="userName" @logout="logout" />
     <router-view class="page-content" v-if="loginSuccess && !loggingIn" />
     <b-message type="is-danger" v-if="!loginSuccess && !loggingIn">
       Merci de vous identifier pour pouvoir accéder à Soxel. <br />
@@ -38,6 +38,10 @@ import { sha256 } from "js-sha256";
 const clientsHashes = [
   "a7309c942c042b99afe6a172670e8ce9b8c5d57b5d4008f221bbd41ca455ad61",
 ];
+const clientsNames = {
+  a7309c942c042b99afe6a172670e8ce9b8c5d57b5d4008f221bbd41ca455ad61:
+    "Soline CTBF",
+};
 export default {
   name: "App",
   components: {
@@ -47,6 +51,7 @@ export default {
     return {
       loggingIn: true,
       loginSuccess: false,
+      userName: "",
     };
   },
 
@@ -56,6 +61,27 @@ export default {
     this.askForPasswordIfNeeded();
   },
   methods: {
+    logout() {
+      localStorage.setItem("lpwd", "");
+      localStorage.setItem("lpwv", "");
+      localStorage.setItem("lpwn", "");
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.userName = "";
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.loggingIn = true;
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.loginSuccess = false;
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.askForPasswordIfNeeded();
+    },
     askForPasswordIfNeeded() {
       const lastPwdCheckSt = localStorage.getItem("lpwd");
       const lastPwdValue = localStorage.getItem("lpwv");
@@ -77,10 +103,12 @@ export default {
         this.$buefy.dialog.prompt({
           message: `Veuillez indiquer votre identifiant Soxel (10 caractères)`,
           inputAttrs: {
-            placeholder: "e.g. MORS-44840",
+            placeholder: "e.g. MORA-44000",
             minlength: 10,
             maxlength: 10,
           },
+          confirmText: "Valider",
+          cancelText: "Annuler",
           trapFocus: true,
           onConfirm: (value: string) => {
             this.performLogin(value, false);
@@ -100,16 +128,19 @@ export default {
         localStorage.setItem("lpwv", actualPwd);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
+        const name = clientsNames[actualPwd];
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         this.loginSuccess = true;
-        let message = `Bienvue sur Soxel ${value} ! Vous nous aviez manqué`;
-        if (hashed) {
-          message = "Vous êtes toujours connecté sur Soxel";
-        }
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.userName = name;
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         this.$buefy.toast.open({
           type: "is-success",
-          message: message,
+          message: `Bienvue sur Soxel ${name} ! Vous nous aviez manqué`,
         });
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -126,10 +157,12 @@ export default {
         this.$buefy.dialog.prompt({
           message: `Veuillez indiquer votre identifiant Soxel (10 caractères)`,
           inputAttrs: {
-            placeholder: "e.g. MORS-44840",
+            placeholder: "e.g. MORA-44000",
             minlength: 10,
             maxlength: 10,
           },
+          cancelText: "Annuler",
+          confirmText: "Valider",
           trapFocus: true,
           onConfirm: (value: string) => {
             this.performLogin(value, false);

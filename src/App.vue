@@ -21,18 +21,122 @@
 <template>
   <div id="app">
     <Menu />
-    <router-view class="page-content" />
+    <router-view class="page-content" v-if="loginSuccess && !loggingIn" />
+    <b-message type="is-danger" v-if="!loginSuccess && !loggingIn">
+      Merci de vous identifier pour pouvoir accéder à Soxel. <br />
+      Pas encore client ? Contactez-nous sur
+      <a href="mailto:lesmorels@googlegroups.com">par mail pour vous abonner</a>
+    </b-message>
   </div>
 </template>
 
 <script lang="ts">
 import Menu from "@/components/Menu.vue";
 import "@mdi/font/css/materialdesignicons.css";
+import { sha256 } from "js-sha256";
 
+const clientsHashes = [
+  "a7309c942c042b99afe6a172670e8ce9b8c5d57b5d4008f221bbd41ca455ad61",
+];
 export default {
   name: "App",
   components: {
     Menu,
+  },
+  data() {
+    return {
+      loggingIn: true,
+      loginSuccess: false,
+    };
+  },
+
+  mounted() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.askForPasswordIfNeeded();
+  },
+  methods: {
+    askForPasswordIfNeeded() {
+      const lastPwdCheckSt = localStorage.getItem("lpwd");
+      const lastPwdValue = localStorage.getItem("lpwv");
+      let lastPwdCheck = undefined;
+      if (lastPwdCheckSt) {
+        lastPwdCheck = new Date();
+        lastPwdCheck.setTime(parseInt(lastPwdCheckSt));
+      }
+      if (
+        !lastPwdValue ||
+        !lastPwdCheck ||
+        new Date().getTime() - lastPwdCheck.getTime() > 1000 * 60 * 24 * 7 * 4
+      ) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loggingIn = false;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.$buefy.dialog.prompt({
+          message: `Veuillez indiquer votre identifiant Soxel (10 caractères)`,
+          inputAttrs: {
+            placeholder: "e.g. MORS-44840",
+            minlength: 10,
+            maxlength: 10,
+          },
+          trapFocus: true,
+          onConfirm: (value: string) => {
+            this.performLogin(value, false);
+          },
+        });
+      } else if (lastPwdValue) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loggingIn = false;
+        this.performLogin(lastPwdValue, true);
+      }
+    },
+    performLogin(value: string, hashed: boolean) {
+      const actualPwd = hashed ? value : sha256(value);
+      if (clientsHashes.indexOf(actualPwd) > -1) {
+        localStorage.setItem("lpwd", "" + new Date().getTime());
+        localStorage.setItem("lpwv", actualPwd);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loginSuccess = true;
+        let message = `Bienvue sur Soxel ${value} ! Vous nous aviez manqué`;
+        if (hashed) {
+          message = "Vous êtes toujours connecté sur Soxel";
+        }
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.$buefy.toast.open({
+          type: "is-success",
+          message: message,
+        });
+      } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.loginSuccess = false;
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.$buefy.toast.open({
+          type: "is-danger",
+          message: `Identifiant Soxel inconnu ou expiré, veuillez contacter le service technique`,
+        });
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.$buefy.dialog.prompt({
+          message: `Veuillez indiquer votre identifiant Soxel (10 caractères)`,
+          inputAttrs: {
+            placeholder: "e.g. MORS-44840",
+            minlength: 10,
+            maxlength: 10,
+          },
+          trapFocus: true,
+          onConfirm: (value: string) => {
+            this.performLogin(value, false);
+          },
+        });
+      }
+    },
   },
 };
 </script>

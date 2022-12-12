@@ -8,6 +8,7 @@ export function generateBloctelCSVFile(
   const reader = new FileReader();
   reader.onload = function(e) {
     if (e.target && e.target.result) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const data = new Uint8Array(e.target.result);
       const baseFileXLSX = XLSX.read(data, {
@@ -38,7 +39,7 @@ export function generateBloctelCSVFile(
       link.setAttribute("download", fileName);
       document.body.appendChild(link); // Required for FF
       link.click();
-      const ws = callback(
+      callback(
         "",
         "Le fichier contient " +
           phoneNumbers.lines +
@@ -58,6 +59,7 @@ export function generateBloctelOdsFile(
   const reader = new FileReader();
   reader.onload = function(e) {
     if (e.target && e.target.result) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const data = new Uint8Array(e.target.result);
       const baseFileXLSX = XLSX.read(data, {
@@ -109,12 +111,14 @@ export function parseAndMapOds(
   const reader = new FileReader();
   reader.onload = function(e) {
     if (e.target && e.target.result) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const data = new Uint8Array(e.target.result);
       const baseFileXLSX = XLSX.read(data, { type: "array" });
       const reader2 = new FileReader();
       reader2.onload = function(e2) {
         if (e2.target && e2.target.result) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           const data2 = new Uint8Array(e2.target.result);
           const bloctelAnswerXLSX = XLSX.read(data2, {
@@ -137,6 +141,7 @@ export function parseAndMapCSV(
   const reader = new FileReader();
   reader.onload = function(e) {
     if (e.target && e.target.result) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const data = new Uint8Array(e.target.result);
       const baseFileXLSX = XLSX.read(data, { type: "array" });
@@ -233,7 +238,7 @@ function doMap(
       .replace(".xlsx", "")
       .replace(".xls", "")
       .trim()
-      .substring(0, 15) + "-FUSION-BLOCTEL.ods";
+      .substring(0, 15) + "-FUSION-BLOCTEL.xlsx";
   try {
     XLSX.writeFile(base, fileName);
   } catch (e) {

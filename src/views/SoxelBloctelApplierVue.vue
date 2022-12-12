@@ -30,7 +30,7 @@
       <div class="message">
         <b-message type="is-info">
           Cette action permet d'intégrer un fichier de réponse bloctel à votre
-          fichier de listing initial
+          fichier de listing initial, en masquant les numéros bloqués.
         </b-message>
       </div>
     </div>

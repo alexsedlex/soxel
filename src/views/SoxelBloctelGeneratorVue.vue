@@ -26,6 +26,17 @@
     :clickable="true"
     :has-navigation="false"
   >
+    <div class="infos">
+      <div class="message">
+        <b-message type="is-info">
+          Cette action permet de générer fichier de demande bloctel (format csv)
+          que vous pourrez soumettre
+          <a href="https://pro.bloctel.gouv.fr/mes-fichiers" target="bloctel">
+            directement sur bloctel
+          </a>
+        </b-message>
+      </div>
+    </div>
     <b-step-item step="1" label="Fichier Base" :clickable="true">
       <div class="content">
         <h1 class="title has-text-centered">Fichier Base</h1>
@@ -40,19 +51,20 @@
         <b-upload
           v-model="baseFile"
           class="file-label"
-          accept=".ods,.xlsx"
+          accept=".ods,.xlsx,.xls"
           multiple
         >
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
             <span class="file-label">
-              Renseignez le fichier Excel Base (format ods ou xlsx)</span
+              Renseignez le fichier Excel Base (format ods, xls ou xlsx)</span
             >
           </span>
           <span class="file-name" v-if="baseFile.length > 0">
             {{ baseFile[0].name }}
           </span>
         </b-upload>
+        <br />
       </div>
     </b-step-item>
 
@@ -75,11 +87,7 @@
         </div>
         <div v-else>
           <b-message type="is-success"
-            >Fichier à envoyer à bloctel généré ! Vous pouvez soumettre ce
-            fichier csv
-            <a href="https://pro.bloctel.gouv.fr/mes-fichiers">
-              directement sur bloctel </a
-            ><br />
+            >Fichier à envoyer à bloctel généré ! <br />
             <span v-html="success" />
           </b-message>
         </div>
@@ -162,5 +170,17 @@ export default class SoxelBloctelGeneratorVue extends Vue {
 .content {
   margin: auto;
   width: 700px;
+}
+.infos {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .message {
+    margin-left: -30px;
+    width: 700px;
+  }
+  padding-bottom: 20px;
 }
 </style>

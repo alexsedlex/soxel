@@ -28,6 +28,8 @@ export function generateBloctelCSVFile(
       const fileName =
         baseFile[0].name
           .replace(".ods", "")
+          .replace(".xls", "")
+          .replace(".xlsx", "")
           .trim()
           .substring(0, 15) + "- DEMANDE BLOCTEL.csv";
       const encodedUri = encodeURI(csvContent);
@@ -77,6 +79,8 @@ export function generateBloctelOdsFile(
       const fileName =
         baseFile[0].name
           .replace(".ods", "")
+          .replace(".xls", "")
+          .replace(".xlsx", "")
           .trim()
           .substring(0, 15) + "- DEMANDE BLOCTEL.ods";
       try {
@@ -226,6 +230,8 @@ function doMap(
   const fileName =
     baseFile[0].name
       .replace(".ods", "")
+      .replace(".xlsx", "")
+      .replace(".xls", "")
       .trim()
       .substring(0, 15) + "-FUSION-BLOCTEL.ods";
   try {

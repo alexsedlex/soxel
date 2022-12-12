@@ -26,6 +26,14 @@
     :clickable="true"
     :has-navigation="false"
   >
+    <div class="infos">
+      <div class="message">
+        <b-message type="is-info">
+          Cette action permet d'intégrer un fichier de réponse bloctel à votre
+          fichier de listing initial
+        </b-message>
+      </div>
+    </div>
     <b-step-item step="1" label="Fichier Base" :clickable="true">
       <div class="content">
         <h1 class="title has-text-centered">Fichier Base</h1>
@@ -46,7 +54,7 @@
           <span class="file-cta">
             <b-icon class="file-icon" icon="upload"></b-icon>
             <span class="file-label">
-              Renseignez le fichier Excel Base (format ods ou xlsx)</span
+              Renseignez le fichier Excel Base (format ods, xls ou xlsx)</span
             >
           </span>
           <span class="file-name" v-if="baseFile.length > 0">
@@ -209,5 +217,18 @@ export default class SoxelBloctelApplierVue extends Vue {
 .content {
   margin: auto;
   width: 700px;
+}
+
+.infos {
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .message {
+    margin-left: -30px;
+    width: 700px;
+  }
+  padding-bottom: 20px;
 }
 </style>

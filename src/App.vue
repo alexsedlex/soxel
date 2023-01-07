@@ -37,10 +37,13 @@ import { sha256 } from "js-sha256";
 
 const clientsHashes = [
   "a7309c942c042b99afe6a172670e8ce9b8c5d57b5d4008f221bbd41ca455ad61",
+  "5ceae8d2a8d34628bc35999f6d283ef9343368439d65961b16eb83c2ca039978",
 ];
 const clientsNames = {
   a7309c942c042b99afe6a172670e8ce9b8c5d57b5d4008f221bbd41ca455ad61:
     "Soline CTBF",
+  "5ceae8d2a8d34628bc35999f6d283ef9343368439d65961b16eb83c2ca039978":
+    "Florella AMHF",
 };
 export default {
   name: "App",
@@ -143,6 +146,7 @@ export default {
           message: `Bienvue sur Soxel ${name} ! Vous nous aviez manqué`,
         });
       } else {
+        console.error("unknown : ", actualPwd);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         this.loginSuccess = false;
